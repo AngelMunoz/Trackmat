@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29209.62
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trackmat.Cli", "Trackmat.Cli\Trackmat.Cli.csproj", "{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trackmat.Lib", "Trackmat.Lib\Trackmat.Lib.csproj", "{BA451B13-8362-44F2-84A2-384D18320720}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Trackmat.UnitTests", "Trackmat.UnitTests\Trackmat.UnitTests.csproj", "{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Add Item|Any CPU = Add Item|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}.Add Item|Any CPU.ActiveCfg = Add Item Wrong Date|Any CPU
+		{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}.Add Item|Any CPU.Build.0 = Add Item Wrong Date|Any CPU
+		{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A6B155F-AF2A-4D79-A640-FD75CE0FBB5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA451B13-8362-44F2-84A2-384D18320720}.Add Item|Any CPU.ActiveCfg = Add Item Wrong Date|Any CPU
+		{BA451B13-8362-44F2-84A2-384D18320720}.Add Item|Any CPU.Build.0 = Add Item Wrong Date|Any CPU
+		{BA451B13-8362-44F2-84A2-384D18320720}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA451B13-8362-44F2-84A2-384D18320720}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA451B13-8362-44F2-84A2-384D18320720}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA451B13-8362-44F2-84A2-384D18320720}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}.Add Item|Any CPU.ActiveCfg = Add Item Wrong Date|Any CPU
+		{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}.Add Item|Any CPU.Build.0 = Add Item Wrong Date|Any CPU
+		{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC44911-6A6D-40E6-8E7D-31D191DC0A7D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {34388871-AB7F-4D24-A67B-3BF52267512C}
+	EndGlobalSection
+EndGlobal

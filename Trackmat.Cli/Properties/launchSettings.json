@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "Trackmat.Cli-Init": {
+      "commandName": "Project",
+      "commandLineArgs": "init"
+    },
+    "Trackmat.Cli-Init-Desktop": {
+      "commandName": "Project",
+      "commandLineArgs": "init -h C:\\Users\\scyth\\Desktop"
+    },
+    "Trackmat.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "add-item  -i CSV-2550 -t 2.5 -z ALV -d 2019-05-16 -u https://localhost/browse/CSV-2550"
+    },
+    "Trackmat.Cli-GoodDate": {
+      "commandName": "Project",
+      "commandLineArgs": "add-item  -i CSV-2550 -t 2.5 -z ALV -d 1992-12-10"
+    },
+    "Trackmat.Cli-BadDate": {
+      "commandName": "Project",
+      "commandLineArgs": "add-item  -i CSV-2550 -t 2.5 -z ALV -d 12-12-1992"
+    }
+  }
+}
