@@ -2,11 +2,12 @@
 
 namespace Trackmat.Lib.Interfaces
 {
-  public interface IRunnable
+  public interface IRunnable<T>
   {
     int Find(ObjectId id, string key = null);
-    int Create<T>(T target);
-    int Update<K, T>(K identifier, T target);
-    int Delete<T>(T target);
+    int Create(T target);
+    int Update(string name, T target);
+    int Update(ObjectId id, T target);
+    int Delete(T target);
   }
 }
