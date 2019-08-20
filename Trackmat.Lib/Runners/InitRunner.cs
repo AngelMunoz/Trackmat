@@ -113,7 +113,7 @@ namespace Trackmat.Lib.Runners
         {
           var configdb = db.GetCollection<InitConfig>();
           configdb.Insert(new InitConfig { HomeDirectory = path });
-          Console.WriteLine($"Succesfully Created Config Database {Path.Combine(path, "config.db")}");
+          Console.WriteLine($"Succesfully Created Config Database \"{Path.Combine(path, "config.db")}\"");
         }
         using (var db = new LiteDatabase(Path.Combine(path, "trackmat.db")))
         {
@@ -135,7 +135,17 @@ namespace Trackmat.Lib.Runners
             Items = new TrackItem[] { resItem }
           });
           var periodRes = periods.Include(period => period.Items).FindOne(period => period.EzName == "sample");
-          Console.WriteLine($"Succesfully Created Item and Period Databases {Path.Combine(path, "trackmat.db")}");
+
+          items.EnsureIndex(item => item.Item);
+          items.EnsureIndex(item => item.Date);
+
+          periods.EnsureIndex(period => period.EzName, true);
+          periods.EnsureIndex(period => period.Name);
+
+          periods.EnsureIndex(period => period.StartDate);
+          periods.EnsureIndex(period => period.EndDate);
+
+          Console.WriteLine($"Succesfully Created Item and Period Databases \"{Path.Combine(path, "trackmat.db")}\"");
           Console.WriteLine(periodRes.ToString());
           Console.WriteLine(resItem.ToString());
           Console.ResetColor();
