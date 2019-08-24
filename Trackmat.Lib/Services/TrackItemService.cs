@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using LiteDB;
@@ -45,17 +46,16 @@ namespace Trackmat.Lib.Services
       }
     }
 
-    public TrackItem FindOne(string name)
+    public PaginatedResult<TrackItem> Find(string name, PaginationValues pagination)
     {
-      try
+      var skip = (pagination.Page - 1) * pagination.Limit;
+      var count = trackitems.Count(item => item.Item == name);
+      var items = trackitems.Find(item => item.Item == name, skip, pagination.Limit);
+      return new PaginatedResult<TrackItem>
       {
-        return trackitems.FindOne(item => item.Item == name);
-      }
-      catch (Exception e)
-      {
-        Debug.WriteLine(e.Message, "[Trackmat:Services:TrackItemService]");
-        throw;
-      }
+        Count = count,
+        List = items
+      };
     }
 
 
