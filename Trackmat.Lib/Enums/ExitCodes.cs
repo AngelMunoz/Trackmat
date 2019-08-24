@@ -9,5 +9,6 @@
     FailedInitAtDatabase,
     NotConfigured,
     FailedToCreateItem,
+    FailedToShowItems
   }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Runners;
@@ -8,7 +9,7 @@ using Trackmat.Lib.Services;
 namespace Trackmat.UnitTests.Runners
 {
   [TestClass]
-  public class ItemRunnerTest
+  public class TrackItemServiceTest
   {
     private string homepath;
     private TrackItemService _items;
@@ -77,6 +78,22 @@ namespace Trackmat.UnitTests.Runners
       Assert.AreEqual(item.Item, found.Item);
       Assert.AreEqual(item.Time, found.Time);
       Assert.AreEqual(item.Url, found.Url);
+    }
+
+    [TestMethod]
+    public void Should_Give_An_Empty_Result()
+    {
+      var result = _items.Find("", new PaginationValues { Page = 1, Limit = 10 });
+      Assert.IsTrue(result.List.Count() == 0);
+      Assert.AreEqual(0, result.Count);
+    }
+
+    [TestMethod]
+    public void Should_Give_A_Single_Result()
+    {
+      var result = _items.Find("SMPL-001", new PaginationValues { Page = 1, Limit = 10 });
+      Assert.IsTrue(result.List.Count() == 1);
+      Assert.AreEqual(1, result.Count);
     }
   }
 }
