@@ -7,48 +7,76 @@ using Trackmat.Lib.Services;
 
 namespace Trackmat.Lib.Runners
 {
-  public class ItemRunner : IRunnable<TrackItem>
+  public class ItemRunner
   {
-    protected TrackItemService _items { get; private set; } = new TrackItemService();
-
 
     public int Create(TrackItem target)
     {
-      try
+      using (var items = new TrackItemService())
       {
-        var created = _items.Create(target);
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Saved [{created.Id} - {created.Item}] Successfully \n{created}");
-        Console.ResetColor();
+        try
+        {
+          var created = items.Create(target);
+          Console.ForegroundColor = ConsoleColor.Green;
+          Console.WriteLine($"Saved [{created.Id} - {created.Item}] Successfully \n{created}");
+          Console.ResetColor();
+        }
+        catch (Exception e)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine($"Failed to Create {target.Item}. {e.Message}");
+          Console.ResetColor();
+          return (int)ExitCodes.FailedToCreateItem;
+        }
+        return (int)ExitCodes.Success;
       }
-      catch (Exception e)
+    }
+
+    public int Show(ShowOptions options)
+    {
+      using (var items = new TrackItemService())
       {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"Failed to Create {target.Item}. {e.Message}");
-        Console.ResetColor();
-        return (int)ExitCodes.FailedToCreateItem;
+        try
+        {
+          PaginatedResult<TrackItem> result;
+          if (options.ItemId != null)
+          {
+            var item = items.FindOne(options.ItemId);
+            result = new PaginatedResult<TrackItem>
+            {
+              List = new TrackItem[] { item },
+              Count = 1
+            };
+          }
+          else
+          {
+            result = items.Find(options.Name, options.Pagination);
+          }
+          Console.ForegroundColor = ConsoleColor.Green;
+          Console.WriteLine($"Found [{result.Count}] {(result.Count == 1 ? "Item" : "Items")}");
+          foreach (var item in result.List)
+          {
+            if (options.Detailed)
+            {
+              Console.WriteLine($"[{item.Id} - ({item.Item})] - {item.Time}h {item.Date.ToShortDateString()} {item.Url}");
+            }
+            else
+            {
+              Console.WriteLine(item);
+            }
+          }
+          Console.ResetColor();
+          return (int)ExitCodes.Success;
+        }
+        catch (Exception e)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine($"Failed to show items. {e.Message}");
+          Console.ResetColor();
+          return (int)ExitCodes.FailedToShowItems;
+        }
       }
-      return (int)ExitCodes.Success;
     }
 
-    public int Delete(TrackItem target)
-    {
-      throw new NotImplementedException();
-    }
-
-    public int Find(ObjectId id, string key = null)
-    {
-      throw new NotImplementedException();
-    }
-
-    public int Update(string name, TrackItem target)
-    {
-      throw new NotImplementedException();
-    }
-
-    public int Update(ObjectId id, TrackItem target)
-    {
-      throw new NotImplementedException();
-    }
   }
 }

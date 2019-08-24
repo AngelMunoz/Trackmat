@@ -10,7 +10,7 @@ namespace Trackmat.Cli
   {
     static int Main(string[] args)
     {
-      var result = Parser.Default.ParseArguments<InitOptions, AddItemOptions>(args)
+      var result = Parser.Default.ParseArguments<InitOptions, AddItemOptions, ShowItemOptions>(args)
         .MapResult(
           (InitOptions opts) => InitOptions.Run(opts),
           (AddItemOptions opts) =>
@@ -24,6 +24,18 @@ namespace Trackmat.Cli
               return (int)ExitCodes.NotConfigured;
             }
             return AddItemOptions.Run(opts);
+          },
+          (ShowItemOptions opts) =>
+          {
+            if (!InitRunner.IsConfigured())
+            {
+              Console.ForegroundColor = ConsoleColor.Red;
+              Console.WriteLine("Trackmat is not configured yet");
+              Console.WriteLine("Please run \"trackmat init\" to configure Trackmat");
+              Console.ResetColor();
+              return (int)ExitCodes.NotConfigured;
+            }
+            return ShowItemOptions.Run(opts);
           },
           errs => (int)ExitCodes.ArgParseFailed
         );
