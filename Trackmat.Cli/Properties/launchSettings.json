@@ -19,6 +19,14 @@
     "Trackmat.Cli-BadDate": {
       "commandName": "Project",
       "commandLineArgs": "add-item  -i CSV-2550 -t 2.5 -z ALV -d 12-12-1992"
+    },
+    "Trackmat.Cli-ShowItems": {
+      "commandName": "Project",
+      "commandLineArgs": "show-item  -i CSV-2550"
+    },
+    "Trackmat.Cli-ShowItemsDetailed": {
+      "commandName": "Project",
+      "commandLineArgs": "show-item  -i CSV-2550 -d"
     }
   }
 }
