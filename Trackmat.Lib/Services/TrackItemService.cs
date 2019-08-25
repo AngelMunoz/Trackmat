@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using LiteDB;
@@ -58,7 +57,10 @@ namespace Trackmat.Lib.Services
       };
     }
 
-
+    public bool UpdateOne(TrackItem toUpdate)
+    {
+      return trackitems.Update(toUpdate);
+    }
 
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls
