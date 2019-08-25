@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using LiteDB;
 using Trackmat.Lib.Models;
 
@@ -58,7 +59,35 @@ namespace Trackmat.Lib.Services
       };
     }
 
+    public IEnumerable<TrackItem> Find(IEnumerable<ObjectId> ids)
+    {
+      return ids.Select(id => trackitems.FindById(id));
+    }
 
+    public int Delete(string name)
+    {
+      return trackitems.Delete(item => item.Item == name);
+    }
+
+    public bool Delete(ObjectId id)
+    {
+      return trackitems.Delete(id);
+    }
+
+    public IEnumerable<bool> Delete(IEnumerable<ObjectId> ids)
+    {
+      return ids.Select(id => trackitems.Delete(id));
+    }
+
+    public IEnumerable<int> Delete(IEnumerable<string> names)
+    {
+      return names.Select(name => trackitemss.Delete(item => item.Item == name));
+    }
+
+    public bool UpdateOne(TrackItem toUpdate)
+    {
+      return trackitems.Update(toUpdate);
+    }
 
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls
