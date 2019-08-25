@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
@@ -130,6 +132,110 @@ namespace Trackmat.Lib.Runners
         Console.ResetColor();
         return (int)result;
       }
+    }
+
+    public int Delete(DeleteOptions options)
+    {
+      IEnumerable<TrackItem> byIds = new TrackItem[0];
+      IEnumerable<PaginatedResult<TrackItem>> byNames = new PaginatedResult<TrackItem>[0];
+      using (var service = new TrackItemService())
+      {
+        if (options.Ids?.Count() > 0)
+        {
+          byIds = service.Find(options.Ids);
+        }
+
+        if (options.Names?.Count() > 0)
+        {
+          byNames = options.Names.Select(name => service.Find(name, new PaginationValues { Page = 1, Limit = 10 }));
+        }
+
+        if (byIds?.Count() > 0 && !options.DeleteIds)
+        {
+          Console.ForegroundColor = ConsoleColor.Yellow;
+          Console.WriteLine("Found the Following Items:");
+          foreach (var item in byIds)
+          {
+            Console.WriteLine(item);
+          }
+          Console.WriteLine("Are you sure to continue? [Y/N]");
+          var key = Console.ReadKey();
+          if (key.Key == ConsoleKey.Y)
+          {
+            Console.WriteLine("\nDeleting...");
+            var deleted = service.Delete(options.Ids).All(deled => deled);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Deleted All Items By Id...");
+            Console.ResetColor();
+          }
+        }
+        else if (byIds?.Count() > 0 && options.DeleteIds)
+        {
+          Console.WriteLine($"\"--all-ids\" Flag Found. Deleting {byIds.Count()} Items...");
+          var deleted = service.Delete(options.Ids).All(deled => deled);
+          Console.ForegroundColor = ConsoleColor.Green;
+          Console.WriteLine($"Deleted All Items By Id...");
+          Console.ResetColor();
+        }
+
+        if (byNames?.Count() > 0 && !options.DeleteNames)
+        {
+          Console.ForegroundColor = ConsoleColor.Yellow;
+          Console.WriteLine("Found the Following Items By Name:");
+          foreach (var result in byNames)
+          {
+            if (result.Count > 0)
+            {
+              Console.WriteLine($"[{result.List?.First()?.Item} - {result.Count}]");
+              foreach (var item in result.List)
+              {
+                Console.WriteLine($"\t{item}");
+              }
+            }
+          }
+          Console.WriteLine("Are you sure to continue? [Y/N]");
+          var key = Console.ReadKey();
+          if (key.Key == ConsoleKey.Y)
+          {
+            Console.WriteLine("\nDeleting...");
+
+            foreach (var name in options.Names)
+            {
+              var deletes = service.Delete(name);
+              Console.WriteLine($"\tDeleted [{name} - {deletes}]");
+            }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Deleted All Items By Name...");
+            Console.ResetColor();
+          }
+          Console.ResetColor();
+        }
+        else if (byNames?.Count() > 0 && options.DeleteNames)
+        {
+          var results = byNames.Select(result =>
+          {
+            if (result.Count > 0)
+              return (result.Count, result.List.First().Item);
+            else
+              return (0, null);
+          });
+          var total = results.Aggregate(
+            "",
+            (prev, next) =>
+              $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev},")}[{next.Item} With {next.Count} {(next.Count == 1 ? "Item" : "Items")}]"
+          );
+          Console.WriteLine($"\"--all-names\" Flag Found. Deleting ({total})");
+          foreach (var name in options.Names)
+          {
+            var deletes = service.Delete(name);
+            Console.WriteLine($"\tDeleted [{name} - {deletes}]");
+          }
+          Console.ForegroundColor = ConsoleColor.Green;
+          Console.WriteLine($"Deleted All Items By Name...");
+          Console.ResetColor();
+        }
+      }
+      return (int)ExitCodes.Success;
     }
   }
 }
