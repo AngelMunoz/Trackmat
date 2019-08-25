@@ -35,6 +35,10 @@
     "Trackmat.Cli-UpdateItemNoName": {
       "commandName": "Project",
       "commandLineArgs": "update-item -I 5d61d4779791d303e885db4d -r"
+    },
+    "Trackmat.Cli-DeleteItems": {
+      "commandName": "Project",
+      "commandLineArgs": "delete-item -n CSV-2550"
     }
   }
 }
