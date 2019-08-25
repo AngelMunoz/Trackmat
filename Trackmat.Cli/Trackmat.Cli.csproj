@@ -4,6 +4,14 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <Configurations>Debug;Release;Add Item;Add Item Wrong Date</Configurations>
+    <Version>0.4.0</Version>
+    <Authors>Angel D. Munoz</Authors>
+    <Company>Tunaxor Apps.</Company>
+    <RepositoryUrl>https://github.com/AngelMunoz/Trackmat</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/AngelMunoz/Trackmat</PackageProjectUrl>
+    <Description>A small console utility to keep track of my jira tickets/overtime</Description>
+    <PackageLicenseFile>README.md</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +20,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trackmat.Lib\Trackmat.Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

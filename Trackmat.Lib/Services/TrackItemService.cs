@@ -81,7 +81,7 @@ namespace Trackmat.Lib.Services
 
     public IEnumerable<int> Delete(IEnumerable<string> names)
     {
-      return names.Select(name => trackitemss.Delete(item => item.Item == name));
+      return names.Select(name => trackitems.Delete(item => item.Item == name));
     }
 
     public bool UpdateOne(TrackItem toUpdate)
