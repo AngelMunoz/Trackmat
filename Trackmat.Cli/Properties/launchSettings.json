@@ -27,6 +27,14 @@
     "Trackmat.Cli-ShowItemsDetailed": {
       "commandName": "Project",
       "commandLineArgs": "show-item  -i CSV-2550 -d"
+    },
+    "Trackmat.Cli-UpdateItem": {
+      "commandName": "Project",
+      "commandLineArgs": "update-item -I 5d61d4779791d303e885db4d -n Smpl-001"
+    },
+    "Trackmat.Cli-UpdateItemNoName": {
+      "commandName": "Project",
+      "commandLineArgs": "update-item -I 5d61d4779791d303e885db4d -r"
     }
   }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
-using LiteDB;
 using Trackmat.Lib.Enums;
-using Trackmat.Lib.Interfaces;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
 
@@ -78,5 +76,60 @@ namespace Trackmat.Lib.Runners
       }
     }
 
+    public int Update(UpdateOptions options)
+    {
+      using (var items = new TrackItemService())
+      {
+        var toUpdate = items.FindOne(options.UpdateId);
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Found: {toUpdate}");
+        if (options.IsReplacing)
+        {
+          options.UpdateDefinition.Id = toUpdate.Id;
+          Console.ForegroundColor = ConsoleColor.Yellow;
+          Console.WriteLine($"Will Replace With: {options.UpdateDefinition}");
+          Console.WriteLine($"Are you Sure to Continue?");
+          var key = Console.ReadKey();
+          if (key.Key == ConsoleKey.Y)
+          {
+            return items.UpdateOne(options.UpdateDefinition) ? (int)ExitCodes.Success : (int)ExitCodes.FailedToUpdate;
+          }
+          Console.ResetColor();
+          return (int)ExitCodes.FailedToUpdate;
+        }
+
+        if (options.UpdateDefinition.Item != null)
+        {
+          toUpdate.Item = options.UpdateDefinition.Item;
+        }
+
+        if (options.UpdateDefinition.Time != -1f)
+        {
+          toUpdate.Time = options.UpdateDefinition.Time;
+        }
+
+        if (options.UpdateDefinition.Date != DateTime.MinValue)
+        {
+          toUpdate.Date = options.UpdateDefinition.Date;
+        }
+
+        if (options.UpdateDefinition.Url != null)
+        {
+          toUpdate.Url = options.UpdateDefinition.Url;
+        }
+        Console.WriteLine($"Updating...");
+        var result = items.UpdateOne(toUpdate) ? ExitCodes.Success : ExitCodes.FailedToUpdate;
+        if (result != ExitCodes.Success)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine("Failed to update...");
+          Console.ResetColor();
+          return (int)result;
+        }
+        Console.WriteLine($"Update Succesfull [{toUpdate.Id} - ({toUpdate.Item})]");
+        Console.ResetColor();
+        return (int)result;
+      }
+    }
   }
 }
