@@ -10,6 +10,8 @@
     NotConfigured,
     FailedToCreateItem,
     FailedToShowItems,
-    FailedToUpdate
+    FailedToUpdate,
+    PeriodExists,
+    FailedToShowPeriod
   }
 }

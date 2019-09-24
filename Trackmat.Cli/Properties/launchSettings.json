@@ -39,6 +39,18 @@
     "Trackmat.Cli-DeleteItems": {
       "commandName": "Project",
       "commandLineArgs": "delete-item -n CSV-2550"
+    },
+    "Trackmat.Cli-ShowPeriod": {
+      "commandName": "Project",
+      "commandLineArgs": "show-period -z s5"
+    },
+    "Trackmat.Cli-CreatePeriod": {
+      "commandName": "Project",
+      "commandLineArgs": "add-period -n \"Sprint 5\" -z s5 -s 2019-09-15 -e 2019-09-24"
+    },
+    "Trackmat.Cli-ShowPeriodDetailed": {
+      "commandName": "Project",
+      "commandLineArgs": "show-period -z s5 -d"
     }
   }
 }
