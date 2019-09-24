@@ -1,12 +1,10 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 using Trackmat.Cli.Options;
 using Trackmat.Lib.Enums;
-using Trackmat.Lib.Runners;
 
 namespace Trackmat.Cli
 {
-  class Program
+  public class Program
   {
     static int Main(string[] args)
     {
@@ -15,60 +13,22 @@ namespace Trackmat.Cli
                         AddItemOptions,
                         ShowItemOptions,
                         UpdateItemOptions,
-                        DeleteItemOptions>(args)
+                        DeleteItemOptions,
+                        AddPeriodOptions,
+                        RunShowPeriodOptions>(args)
         .MapResult(
-          (InitOptions opts) => InitOptions.Run(opts),
-          (AddItemOptions opts) =>
-          {
-            if (!InitRunner.IsConfigured())
-            {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Trackmat is not configured yet");
-              Console.WriteLine("Please run \"trackmat init\" to configure Trackmat");
-              Console.ResetColor();
-              return (int)ExitCodes.NotConfigured;
-            }
-            return AddItemOptions.Run(opts);
-          },
-          (ShowItemOptions opts) =>
-          {
-            if (!InitRunner.IsConfigured())
-            {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Trackmat is not configured yet");
-              Console.WriteLine("Please run \"trackmat init\" to configure Trackmat");
-              Console.ResetColor();
-              return (int)ExitCodes.NotConfigured;
-            }
-            return ShowItemOptions.Run(opts);
-          },
-          (UpdateItemOptions opts) =>
-          {
-            if (!InitRunner.IsConfigured())
-            {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Trackmat is not configured yet");
-              Console.WriteLine("Please run \"trackmat init\" to configure Trackmat");
-              Console.ResetColor();
-              return (int)ExitCodes.NotConfigured;
-            }
-            return UpdateItemOptions.Run(opts);
-          },
-          (DeleteItemOptions opts) =>
-          {
-            if (!InitRunner.IsConfigured())
-            {
-              Console.ForegroundColor = ConsoleColor.Red;
-              Console.WriteLine("Trackmat is not configured yet");
-              Console.WriteLine("Please run \"trackmat init\" to configure Trackmat");
-              Console.ResetColor();
-              return (int)ExitCodes.NotConfigured;
-            }
-            return DeleteItemOptions.Run(opts);
-          },
+          InitRunnerStart.RunInit(),
+          ItemRunnerStart.RunAddItem(),
+          ItemRunnerStart.RunShowItem(),
+          ItemRunnerStart.RunUpdateItem(),
+          ItemRunnerStart.RunDeleteItem(),
+          PeriodRunnerStart.RunAddPeriod(),
+          PeriodRunnerStart.RunShowPeriod(),
           errs => (int)ExitCodes.ArgParseFailed
         );
       return result;
     }
+
+
   }
 }
