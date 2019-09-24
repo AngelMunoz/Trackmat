@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Trackmat.Cli.Options;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Runners;

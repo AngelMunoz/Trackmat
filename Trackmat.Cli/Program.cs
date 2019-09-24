@@ -1,8 +1,6 @@
-﻿using System;
-using CommandLine;
+﻿using CommandLine;
 using Trackmat.Cli.Options;
 using Trackmat.Lib.Enums;
-using Trackmat.Lib.Runners;
 
 namespace Trackmat.Cli
 {
@@ -31,6 +29,6 @@ namespace Trackmat.Cli
       return result;
     }
 
-    
+
   }
 }

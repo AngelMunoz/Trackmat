@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Trackmat.Lib.Models
+﻿namespace Trackmat.Lib.Models
 {
   public class ShowPeriodOptions
   {
