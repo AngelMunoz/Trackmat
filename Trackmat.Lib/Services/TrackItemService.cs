@@ -59,6 +59,11 @@ namespace Trackmat.Lib.Services
       };
     }
 
+    public IEnumerable<TrackItem> Find(IEnumerable<string> names)
+    {
+      return trackitems.Find(item => names.Contains(item.Item));
+    }
+
     public IEnumerable<TrackItem> Find(IEnumerable<ObjectId> ids)
     {
       return ids.Select(id => trackitems.FindById(id));
