@@ -8,7 +8,7 @@ namespace Trackmat.Cli
   {
     static int Main(string[] args)
     {
-      var result = Parser.Default
+      return Parser.Default
         .ParseArguments<InitOptions,
                         AddItemOptions,
                         ShowItemOptions,
@@ -32,7 +32,6 @@ namespace Trackmat.Cli
           PeriodRunnerStart.RunDissociateItems(),
           errs => (int)ExitCodes.ArgParseFailed
         );
-      return result;
     }
 
 
