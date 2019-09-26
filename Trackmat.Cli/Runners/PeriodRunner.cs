@@ -47,7 +47,7 @@ namespace Trackmat.Runners
         try
         {
           var found = periods.FindOne(opts.EzName);
-          if(found == null)
+          if (found == null)
           {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Period With Easy Name [{opts.EzName}] Not found");
