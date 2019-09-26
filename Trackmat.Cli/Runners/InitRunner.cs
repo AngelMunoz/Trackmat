@@ -10,8 +10,8 @@ namespace Trackmat.Runners
   {
     public static bool IsConfigured()
     {
-      var homeDir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User);
-      return !string.IsNullOrEmpty(homeDir) && Directory.Exists(homeDir);
+      var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User) ?? Environment.GetEnvironmentVariable("TRACKMAT_HOME");
+      return !string.IsNullOrEmpty(homedir) && Directory.Exists(homedir);
     }
 
     public int Init(InitConfig opts)
