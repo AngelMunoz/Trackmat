@@ -59,10 +59,23 @@ Set-Alias -Name trackmat -Value "C:\PATH\TO\YOUR\TRACKMAT\DIRECTORY\Trackmat.Cli
 and that's it you should be able to type `trackmat` in your Powershell console without any problems
 
 #### Linux
-Binaries are not provided yet, but you can build from source and follow the same process with your `.profile` or  `.bash_aliases`
+Linux is supported!
+Follow the same process with your `.profile` or  `.bash_aliases`
 ```
 alias trackmat='/PATH/TO/YOUR/TRACKMAT/DIRECTORY/Trackmat.Cli'
 ```
+### Notes for Linux Users
+Setting an env variable to the user level is not supported by .net core
+>On .NET Core on macOS and Linux systems, calls to the SetEnvironmentVariable(String, String, EnvironmentVariableTarget) method with a value of EnvironmentVariableTarget.Machine or EnvironmentVariableTarget.User are ignored.
+
+So you will need to set your `TRACKMAT_HOME` variable manually either in your `.profile` or `.bashrc` file
+```
+export TRACKMAT_HOME="$HOME/.config/trackmat"
+```
+and then run the `trackmat init` command
+Here's an example using Ubuntu in WSL 2
+![Linux](./images/linux.png)
+
 
 ## Usage
 
