@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using CommandLine;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Runners;
