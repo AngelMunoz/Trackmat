@@ -3,7 +3,7 @@ using LiteDB;
 
 namespace Trackmat.Lib.Models
 {
-  public class DeleteOptions
+  public class DeleteTrackItemArgs
   {
     public IEnumerable<ObjectId> Ids { get; set; }
     public IEnumerable<string> Names { get; set; }

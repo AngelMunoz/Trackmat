@@ -2,7 +2,7 @@
 
 namespace Trackmat.Lib.Models
 {
-  public class UpdateOptions
+  public class UpdateTrackItemArgs
   {
     public ObjectId UpdateId { get; set; }
     public TrackItem UpdateDefinition { get; set; }

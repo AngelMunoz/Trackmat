@@ -11,8 +11,6 @@ namespace Trackmat.Lib.Models
     public float Time { get; set; }
     public DateTime Date { get; set; }
     public string Url { get; set; }
-    [BsonRef("periods")]
-    public Period Period { get; set; }
 
     public override string ToString()
     {

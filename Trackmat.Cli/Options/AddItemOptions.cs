@@ -3,7 +3,7 @@ using System.Globalization;
 using CommandLine;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli.Options
 {
@@ -15,9 +15,6 @@ namespace Trackmat.Cli.Options
 
     [Option('t', "time", Required = true, HelpText = "Amount of time it was worked on expresed in hours. Ex. 3.5 equals three hours and a half")]
     public float Time { get; set; }
-
-    [Option('z', "ezname", Required = false, HelpText = "name used to asociate this item with a specific period. Ex. \"Sprint5\"")]
-    public string EzName { get; set; }
 
     [Option('d', "date", Required = false, HelpText = "Date when the item was worked on. Ex. 2020-05-16")]
     public string Date { get; set; }

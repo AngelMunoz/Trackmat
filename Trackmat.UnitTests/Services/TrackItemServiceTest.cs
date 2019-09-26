@@ -1,42 +1,32 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using LiteDB;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
-using Trackmat.Lib.Services;
 
-namespace Trackmat.UnitTests.Runners
+namespace Trackmat.Lib.Services.Tests
 {
-  [TestClass]
+  [TestClass()]
   public class TrackItemServiceTest
   {
     private string homepath;
+    private LiteDatabase _db;
     private TrackItemService _items;
 
     [TestInitialize()]
     public void StartUp()
     {
       homepath = Path.Combine(Path.GetTempPath(), "trackmat");
-      Environment.SetEnvironmentVariable("TRACKMAT_HOME", homepath, EnvironmentVariableTarget.User);
-      if (Directory.Exists(homepath))
-      {
-        Directory.Delete(homepath, true);
-      }
-      var initConfig = new InitConfig
-      {
-        HomeDirectory = homepath
-      };
-      var runner = new InitRunner();
-      runner.Init(initConfig);
-      _items = new TrackItemService();
+      Directory.CreateDirectory(homepath);
+      _db = new LiteDatabase(Path.Combine(homepath, "trackmat.db"));
+      _items = new TrackItemService(_db);
     }
 
     [TestCleanup()]
     public void CleanUp()
     {
       _items.Dispose();
-      Environment.SetEnvironmentVariable("TRACKMAT_HOME", null, EnvironmentVariableTarget.User);
       if (Directory.Exists(homepath))
       {
         Directory.Delete(homepath, true);
@@ -44,7 +34,7 @@ namespace Trackmat.UnitTests.Runners
     }
 
     [TestMethod]
-    public void Should_Create_Item()
+    public void CreateTest()
     {
       var item = _items.Create(new TrackItem
       {
@@ -61,7 +51,7 @@ namespace Trackmat.UnitTests.Runners
     }
 
     [TestMethod]
-    public void Should_Find_Item_By_Id()
+    public void FindOneTest()
     {
       var item = _items.Create(new TrackItem
       {
@@ -81,19 +71,22 @@ namespace Trackmat.UnitTests.Runners
     }
 
     [TestMethod]
-    public void Should_Give_An_Empty_Result()
+    public void FindTest()
     {
       var result = _items.Find("", new PaginationValues { Page = 1, Limit = 10 });
       Assert.IsTrue(result.List.Count() == 0);
       Assert.AreEqual(0, result.Count);
-    }
 
-    [TestMethod]
-    public void Should_Give_A_Single_Result()
-    {
-      var result = _items.Find("SMPL-001", new PaginationValues { Page = 1, Limit = 10 });
-      Assert.IsTrue(result.List.Count() == 1);
-      Assert.AreEqual(1, result.Count);
+      _items.Create(new TrackItem
+      {
+        Item = "IM-UNIQ",
+        Time = 0.5f,
+        Date = DateTime.Now,
+        Url = "https://localhost/browse/SMPL-001"
+      });
+      var uniq = _items.Find("IM-UNIQ", new PaginationValues { Page = 1, Limit = 10 });
+      Assert.IsTrue(uniq.List.Count() == 1);
+      Assert.AreEqual(1, uniq.Count);
     }
   }
 }

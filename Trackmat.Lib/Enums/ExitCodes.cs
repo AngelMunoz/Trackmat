@@ -10,6 +10,12 @@
     NotConfigured,
     FailedToCreateItem,
     FailedToShowItems,
-    FailedToUpdate
+    FailedToUpdate,
+    PeriodExists,
+    FailedToShowPeriod,
+    PeriodNotFound,
+    EmptyAssociation,
+    EmptyDissociation,
+    FailedToDeletePeriod
   }
 }
