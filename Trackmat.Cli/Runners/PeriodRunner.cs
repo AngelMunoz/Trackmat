@@ -42,41 +42,92 @@ namespace Trackmat.Runners
 
     public int Show(ShowPeriodArgs opts)
     {
-      using (var periods = new PeriodService())
+      if (!opts.All && string.IsNullOrEmpty(opts.EzName))
       {
-        try
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("You must provide either \"-a\" or the \"-z\" flags");
+        Console.WriteLine("Ex. [show-period -a -p 1 -l 10] or [show-period -d -z s5]");
+        Console.ResetColor();
+        return (int)ExitCodes.MissingArguments;
+      }
+      using var periods = new PeriodService();
+      if (opts.All)
+      {
+        return FindAllPeriods(opts.Pagination, opts.Detailed);
+      }
+
+      try
+      {
+        return FindSpecificPeriod((opts.EzName, opts.Detailed), periods);
+      }
+      catch (Exception e)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to show period. {e.Message}");
+        Console.ResetColor();
+        return (int)ExitCodes.FailedToShowPeriod;
+      }
+
+    }
+
+    private int FindAllPeriods(PaginationValues pagination, bool detailed)
+    {
+      using var periods = new PeriodService();
+
+      var paginated = periods.FindAll(pagination);
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.WriteLine($"Found [{paginated.Count}] {(paginated.Count == 1 ? "Period" : "Periods")}");
+      try
+      {
+        foreach (var period in paginated.List)
         {
-          var found = periods.FindOne(opts.EzName);
-          if (found == null)
-          {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Period With Easy Name [{opts.EzName}] Not found");
-            Console.ResetColor();
-            return (int)ExitCodes.PeriodNotFound;
-          }
           Console.ForegroundColor = ConsoleColor.Green;
-          if (!opts.Detailed)
+          Console.WriteLine(period);
+          if (detailed)
           {
-            Console.WriteLine(found);
-          }
-          else
-          {
-            Console.WriteLine(found);
-            foreach (var item in found.Items)
+            Console.ForegroundColor = ConsoleColor.Blue;
+            foreach (var item in period.Items)
             {
               Console.WriteLine($"\t{item}");
             }
           }
-          return (int)ExitCodes.Success;
-        }
-        catch (Exception e)
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine($"Failed to show period. {e.Message}");
           Console.ResetColor();
-          return (int)ExitCodes.FailedToShowPeriod;
         }
       }
+      catch (Exception e)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to show periods {e.Message}");
+        return (int)ExitCodes.FailedToShowPeriod;
+      }
+      return (int)ExitCodes.Success;
+    }
+
+    private int FindSpecificPeriod((string, bool) opts, PeriodService periods)
+    {
+      var (ezName, detailed) = opts;
+      var found = periods.FindOne(ezName);
+      if (found == null)
+      {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Period With Easy Name [{ezName}] Not found");
+        Console.ResetColor();
+        return (int)ExitCodes.PeriodNotFound;
+      }
+      Console.ForegroundColor = ConsoleColor.Green;
+      if (!detailed)
+      {
+        Console.WriteLine(found);
+      }
+      else
+      {
+        Console.WriteLine(found);
+        foreach (var item in found.Items)
+        {
+          Console.WriteLine($"\t{item}");
+        }
+      }
+      return (int)ExitCodes.Success;
     }
 
     public int Update(UpdatePeriodArgs args)
