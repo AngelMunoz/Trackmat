@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
@@ -128,6 +129,130 @@ namespace Trackmat.Lib.Runners
         Console.ResetColor();
         return (int)ExitCodes.Success;
       }
+    }
+
+    public int AssociateItems(AssociateItemArgs args)
+    {
+      IEnumerable<TrackItem> items;
+      Period found;
+      using (var _items = new TrackItemService())
+      {
+        items = _items.Find(args.Items);
+      }
+      using (var periods = new PeriodService())
+      {
+        found = periods.FindOne(args.EzName);
+      }
+      if (found == null)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Period with Easy Name [{args.EzName}] Not Found");
+        Console.ResetColor();
+        return (int)ExitCodes.PeriodNotFound;
+      }
+
+      if (items == null || items.Count() <= 0)
+      {
+        var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"We did not find any items for [{joined}]");
+        Console.ResetColor();
+        return (int)ExitCodes.EmptyAssociation;
+      }
+
+      ConsoleKeyInfo key = new ConsoleKeyInfo();
+      while (key.Key != ConsoleKey.Y && key.Key != ConsoleKey.Enter)
+      {
+        Console.WriteLine($"Found Period\n{found}");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Are you sure you want to associate the following items? [Y/n]");
+        Console.ResetColor();
+        var joined = items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}\n")}{next}");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine($"({joined})");
+        Console.ResetColor();
+        key = Console.ReadKey();
+        if (key.Key == ConsoleKey.N) return (int)ExitCodes.Success;
+      }
+      // if the item is already there don't add it
+      var set = new HashSet<string>(from item in found.Items select item.Item);
+      var newItems = items.Where(item => !set.Contains(item.Item));
+      found.Items = newItems.Concat(found.Items);
+      bool updated = false;
+
+      using (var periods = new PeriodService())
+      {
+        updated = periods.UpdateOne(found);
+      }
+
+      if (!updated)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("We could not associate the items");
+        return (int)ExitCodes.FailedToUpdate;
+      }
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.Write($"\nUpdated\n{found}");
+      return (int)ExitCodes.Success;
+    }
+
+    public int DissociateItems(DissociateItemArgs args)
+    {
+      Period found;
+      using (var periods = new PeriodService())
+      {
+        found = periods.FindOne(args.EzName);
+      }
+      if (found == null)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Period with Easy Name [{args.EzName}] Not Found");
+        Console.ResetColor();
+        return (int)ExitCodes.PeriodNotFound;
+      }
+
+      if (args.Items == null || args.Items.Count() <= 0)
+      {
+        var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"We did not find any items for [{joined}]");
+        Console.ResetColor();
+        return (int)ExitCodes.EmptyDissociation;
+      }
+
+      ConsoleKeyInfo key = new ConsoleKeyInfo();
+      while (key.Key != ConsoleKey.Y && key.Key != ConsoleKey.Enter)
+      {
+        Console.WriteLine($"Found Period\n{found}");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Are you sure you want to dissociate the following items? [Y/n]");
+        Console.ResetColor();
+        var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine($"[{joined}]");
+        Console.ResetColor();
+        key = Console.ReadKey();
+        if (key.Key == ConsoleKey.N) return (int)ExitCodes.Success;
+      }
+
+      var remaining = found.Items.SkipWhile(item => args.Items.Contains(item.Item));
+      found.Items = remaining;
+      bool updated = false;
+
+      using (var periods = new PeriodService())
+      {
+        updated = periods.UpdateOne(found);
+      }
+
+      if (!updated)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("We could not dissociate the items");
+        return (int)ExitCodes.FailedToUpdate;
+      }
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.Write($"\nUpdated\n{found}");
+      return (int)ExitCodes.Success;
     }
   }
 }

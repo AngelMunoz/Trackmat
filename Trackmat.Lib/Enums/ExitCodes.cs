@@ -12,6 +12,9 @@
     FailedToShowItems,
     FailedToUpdate,
     PeriodExists,
-    FailedToShowPeriod
+    FailedToShowPeriod,
+    PeriodNotFound,
+    EmptyAssociation,
+    EmptyDissociation
   }
 }
