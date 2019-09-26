@@ -15,6 +15,9 @@ namespace Trackmat.Cli.Options
     [Option('d', "details", Default = false, Required = false, HelpText = "Show Full details of the items found in match")]
     public bool Details { get; set; }
 
+    [Option('a', "all", Required = false, HelpText = "List all of the existing items in a paginated fashion")]
+    public bool All { get; set; }
+
     [Option('p', "page", Default = 1, HelpText = "Number of the page to list on screen")]
     public int Page { get; set; }
 
@@ -43,7 +46,8 @@ namespace Trackmat.Cli.Options
         Name = Item,
         Pagination = new PaginationValues { Page = Page, Limit = Limit },
         ItemId = id,
-        Detailed = Details
+        Detailed = Details,
+        All = All
       };
     }
     public static int Run(ShowItemOptions opts)

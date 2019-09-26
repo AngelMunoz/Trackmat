@@ -49,6 +49,14 @@ namespace Trackmat.Lib.Services
       }
     }
 
+    public PaginatedResult<TrackItem> FindAll(PaginationValues pagination)
+    {
+      var skip = (pagination.Page - 1) * pagination.Limit;
+      var items = TrackItems.Find(Query.All(), skip, pagination.Limit);
+      var count = TrackItems.Count(Query.All());
+      return new PaginatedResult<TrackItem> { List = items, Count = count };
+    }
+
     public PaginatedResult<TrackItem> Find(string name, PaginationValues pagination)
     {
       var skip = (pagination.Page - 1) * pagination.Limit;

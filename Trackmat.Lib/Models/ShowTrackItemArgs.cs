@@ -8,5 +8,6 @@ namespace Trackmat.Lib.Models
     public PaginationValues Pagination { get; set; }
     public ObjectId ItemId { get; set; }
     public bool Detailed { get; set; }
+    public bool All { get; set; }
   }
 }
