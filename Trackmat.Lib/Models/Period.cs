@@ -17,7 +17,7 @@ namespace Trackmat.Lib.Models
 
     public override string ToString()
     {
-      return $"[{Name} ({EzName})]: From {StartDate.ToShortDateString()} To {EndDate.ToShortDateString()} With {Items?.Count()} {(Items.Count() == 1 ? "Item" : "Items")}";
+      return $"[{Id} - {Name} ({EzName})]: From {StartDate.ToShortDateString()} To {EndDate.ToShortDateString()} With {Items?.Count()} {(Items.Count() == 1 ? "Item" : "Items")}";
     }
   }
 }
