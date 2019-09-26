@@ -18,7 +18,8 @@ namespace Trackmat.Cli
                         RunShowPeriodOptions,
                         UpdatePeriodOptions,
                         AssociateItemsOptions,
-                        DissociateItemsOptions>(args)
+                        DissociateItemsOptions,
+                        DeletePeriodOptions>(args)
         .MapResult(
           InitRunnerStart.RunInit(),
           ItemRunnerStart.RunAddItem(),
@@ -30,6 +31,7 @@ namespace Trackmat.Cli
           PeriodRunnerStart.RunUpdatePeriod(),
           PeriodRunnerStart.RunAssociateItems(),
           PeriodRunnerStart.RunDissociateItems(),
+          PeriodRunnerStart.RunDeletePeriod(),
           errs => (int)ExitCodes.ArgParseFailed
         );
     }

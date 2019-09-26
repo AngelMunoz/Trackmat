@@ -47,6 +47,13 @@ namespace Trackmat.Runners
         try
         {
           var found = periods.FindOne(opts.EzName);
+          if(found == null)
+          {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"Period With Easy Name [{opts.EzName}] Not found");
+            Console.ResetColor();
+            return (int)ExitCodes.PeriodNotFound;
+          }
           Console.ForegroundColor = ConsoleColor.Green;
           if (!opts.Detailed)
           {
@@ -131,18 +138,59 @@ namespace Trackmat.Runners
       }
     }
 
-    public int AssociateItems(AssociateItemArgs args)
+    public int DeletePeriod(DeletePeriodArgs args)
     {
-      IEnumerable<TrackItem> items;
       Period found;
-      using (var _items = new TrackItemService())
-      {
-        items = _items.Find(args.Items);
-      }
       using (var periods = new PeriodService())
       {
         found = periods.FindOne(args.EzName);
+        if (found == null) return (int)ExitCodes.PeriodNotFound;
       }
+
+      ConsoleKeyInfo key = new ConsoleKeyInfo();
+      if (args.Dissociate)
+      {
+        key = new ConsoleKeyInfo('Y', ConsoleKey.Y, false, false, false);
+      }
+      while (key.Key != ConsoleKey.Y && key.Key != ConsoleKey.Enter)
+      {
+        Console.WriteLine($"Found Period\n{found}");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Are you sure you want to dissociate the following items? [Y/n]");
+        Console.ResetColor();
+        var joined = found.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}\n")}{next}");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine($"({joined})");
+        Console.ResetColor();
+        key = Console.ReadKey();
+        if (key.Key == ConsoleKey.N) return (int)ExitCodes.Success;
+      }
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      Console.WriteLine($"Proceeding to Delete\n{found}");
+      var deleted = false;
+      using (var periods = new PeriodService())
+      {
+        deleted = periods.Delete(found.Id);
+      }
+      if (!deleted)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to Delete\n{found}");
+        Console.ResetColor();
+        return (int)ExitCodes.FailedToDeletePeriod;
+      }
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.WriteLine($"Deleted ({found}) Successfully");
+      Console.ResetColor();
+      return (int)ExitCodes.Success;
+    }
+
+    public int AssociateItems(AssociateItemArgs args, ConsoleKeyInfo prePrompt = new ConsoleKeyInfo())
+    {
+      using var periods = new PeriodService();
+      IEnumerable<TrackItem> items;
+      Period found;
+      found = periods.FindOne(args.EzName);
       if (found == null)
       {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -151,6 +199,9 @@ namespace Trackmat.Runners
         return (int)ExitCodes.PeriodNotFound;
       }
 
+      var _items = new TrackItemService();
+
+      items = _items.Find(args.Items);
       if (items == null || items.Count() <= 0)
       {
         var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
@@ -160,7 +211,7 @@ namespace Trackmat.Runners
         return (int)ExitCodes.EmptyAssociation;
       }
 
-      ConsoleKeyInfo key = new ConsoleKeyInfo();
+      ConsoleKeyInfo key = prePrompt;
       while (key.Key != ConsoleKey.Y && key.Key != ConsoleKey.Enter)
       {
         Console.WriteLine($"Found Period\n{found}");
@@ -174,16 +225,13 @@ namespace Trackmat.Runners
         key = Console.ReadKey();
         if (key.Key == ConsoleKey.N) return (int)ExitCodes.Success;
       }
+
       // if the item is already there don't add it
       var set = new HashSet<string>(from item in found.Items select item.Item);
       var newItems = items.Where(item => !set.Contains(item.Item));
       found.Items = newItems.Concat(found.Items);
       bool updated = false;
-
-      using (var periods = new PeriodService())
-      {
-        updated = periods.UpdateOne(found);
-      }
+      updated = periods.UpdateOne(found);
 
       if (!updated)
       {
@@ -196,7 +244,7 @@ namespace Trackmat.Runners
       return (int)ExitCodes.Success;
     }
 
-    public int DissociateItems(DissociateItemArgs args)
+    public int DissociateItems(DissociateItemArgs args, ConsoleKeyInfo prePrompt = new ConsoleKeyInfo())
     {
       Period found;
       using (var periods = new PeriodService())
@@ -220,7 +268,7 @@ namespace Trackmat.Runners
         return (int)ExitCodes.EmptyDissociation;
       }
 
-      ConsoleKeyInfo key = new ConsoleKeyInfo();
+      ConsoleKeyInfo key = prePrompt;
       while (key.Key != ConsoleKey.Y && key.Key != ConsoleKey.Enter)
       {
         Console.WriteLine($"Found Period\n{found}");
@@ -254,5 +302,6 @@ namespace Trackmat.Runners
       Console.Write($"\nUpdated\n{found}");
       return (int)ExitCodes.Success;
     }
+
   }
 }

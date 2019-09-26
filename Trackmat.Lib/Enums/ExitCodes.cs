@@ -15,6 +15,7 @@
     FailedToShowPeriod,
     PeriodNotFound,
     EmptyAssociation,
-    EmptyDissociation
+    EmptyDissociation,
+    FailedToDeletePeriod
   }
 }

@@ -55,6 +55,10 @@
     "Trackmat.Cli-UpdatePeriod": {
       "commandName": "Project",
       "commandLineArgs": "update-period -z s5 -n \"New Name\" -s 2019-11-05"
+    },
+    "Trackmat.Cli-AssociateItems": {
+      "commandName": "Project",
+      "commandLineArgs": "associate-items -z s5 -i CSV-2550 CSV-2551 CSV-2552"
     }
   }
 }

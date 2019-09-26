@@ -83,6 +83,11 @@ namespace Trackmat.Lib.Services
       }
     }
 
+    public bool Delete(ObjectId id)
+    {
+      return Periods.Delete(id);
+    }
+
     #region IDisposable Support
     private bool disposedValue = false; // To detect redundant calls
 
