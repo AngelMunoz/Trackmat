@@ -69,67 +69,6 @@ namespace Trackmat.Runners
       }
 
     }
-
-    private int FindAllPeriods(PaginationValues pagination, bool detailed)
-    {
-      using var periods = new PeriodService();
-
-      var paginated = periods.FindAll(pagination);
-      Console.ForegroundColor = ConsoleColor.Green;
-      Console.WriteLine($"Found [{paginated.Count}] {(paginated.Count == 1 ? "Period" : "Periods")}");
-      try
-      {
-        foreach (var period in paginated.List)
-        {
-          Console.ForegroundColor = ConsoleColor.Green;
-          Console.WriteLine(period);
-          if (detailed)
-          {
-            Console.ForegroundColor = ConsoleColor.Blue;
-            foreach (var item in period.Items)
-            {
-              Console.WriteLine($"\t{item}");
-            }
-          }
-          Console.ResetColor();
-        }
-      }
-      catch (Exception e)
-      {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"Failed to show periods {e.Message}");
-        return (int)ExitCodes.FailedToShowPeriod;
-      }
-      return (int)ExitCodes.Success;
-    }
-
-    private int FindSpecificPeriod((string, bool) opts, PeriodService periods)
-    {
-      var (ezName, detailed) = opts;
-      var found = periods.FindOne(ezName);
-      if (found == null)
-      {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine($"Period With Easy Name [{ezName}] Not found");
-        Console.ResetColor();
-        return (int)ExitCodes.PeriodNotFound;
-      }
-      Console.ForegroundColor = ConsoleColor.Green;
-      if (!detailed)
-      {
-        Console.WriteLine(found);
-      }
-      else
-      {
-        Console.WriteLine(found);
-        foreach (var item in found.Items)
-        {
-          Console.WriteLine($"\t{item}");
-        }
-      }
-      return (int)ExitCodes.Success;
-    }
-
     public int Update(UpdatePeriodArgs args)
     {
       using (var periods = new PeriodService())
@@ -251,8 +190,12 @@ namespace Trackmat.Runners
       }
 
       var _items = new TrackItemService();
-
       items = _items.Find(args.Items);
+      if (args?.Ids?.Count() > 0)
+      {
+        var temp = _items.Find(args.Ids);
+        items = items.Concat(temp);
+      }
       if (items == null || items.Count() <= 0)
       {
         var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
@@ -297,11 +240,8 @@ namespace Trackmat.Runners
 
     public int DissociateItems(DissociateItemArgs args, ConsoleKeyInfo prePrompt = new ConsoleKeyInfo())
     {
-      Period found;
-      using (var periods = new PeriodService())
-      {
-        found = periods.FindOne(args.EzName);
-      }
+      using var periods = new PeriodService();
+      var found = periods.FindOne(args.EzName);
       if (found == null)
       {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -310,11 +250,12 @@ namespace Trackmat.Runners
         return (int)ExitCodes.PeriodNotFound;
       }
 
-      if (args.Items == null || args.Items.Count() <= 0)
+      if (args?.Items?.Count() <= 0 && args?.Ids?.Count() <= 0)
       {
-        var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        var joined = args?.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        var idsjoined = args?.Ids.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"We did not find any items for [{joined}]");
+        Console.WriteLine($"We did not find any items for [Names] or [Ids]");
         Console.ResetColor();
         return (int)ExitCodes.EmptyDissociation;
       }
@@ -334,14 +275,11 @@ namespace Trackmat.Runners
         if (key.Key == ConsoleKey.N) return (int)ExitCodes.Success;
       }
 
-      var remaining = found.Items.SkipWhile(item => args.Items.Contains(item.Item));
+      var remaining = found.Items.SkipWhile(item => args.Items.Contains(item.Item) || args.Ids.Contains(item.Id));
       found.Items = remaining;
       bool updated = false;
 
-      using (var periods = new PeriodService())
-      {
-        updated = periods.UpdateOne(found);
-      }
+      updated = periods.UpdateOne(found);
 
       if (!updated)
       {
@@ -354,5 +292,64 @@ namespace Trackmat.Runners
       return (int)ExitCodes.Success;
     }
 
+    private int FindAllPeriods(PaginationValues pagination, bool detailed)
+    {
+      using var periods = new PeriodService();
+
+      var paginated = periods.FindAll(pagination);
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.WriteLine($"Found [{paginated.Count}] {(paginated.Count == 1 ? "Period" : "Periods")}");
+      try
+      {
+        foreach (var period in paginated.List)
+        {
+          Console.ForegroundColor = ConsoleColor.Green;
+          Console.WriteLine(period);
+          if (detailed)
+          {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            foreach (var item in period.Items)
+            {
+              Console.WriteLine($"\t{item}");
+            }
+          }
+          Console.ResetColor();
+        }
+      }
+      catch (Exception e)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to show periods {e.Message}");
+        return (int)ExitCodes.FailedToShowPeriod;
+      }
+      return (int)ExitCodes.Success;
+    }
+
+    private int FindSpecificPeriod((string, bool) opts, PeriodService periods)
+    {
+      var (ezName, detailed) = opts;
+      var found = periods.FindOne(ezName);
+      if (found == null)
+      {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Period With Easy Name [{ezName}] Not found");
+        Console.ResetColor();
+        return (int)ExitCodes.PeriodNotFound;
+      }
+      Console.ForegroundColor = ConsoleColor.Green;
+      if (!detailed)
+      {
+        Console.WriteLine(found);
+      }
+      else
+      {
+        Console.WriteLine(found);
+        foreach (var item in found.Items)
+        {
+          Console.WriteLine($"\t{item}");
+        }
+      }
+      return (int)ExitCodes.Success;
+    }
   }
 }

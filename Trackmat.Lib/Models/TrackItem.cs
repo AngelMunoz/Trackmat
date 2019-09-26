@@ -14,7 +14,7 @@ namespace Trackmat.Lib.Models
 
     public override string ToString()
     {
-      return $"[{Item}]: {Time}h - {Date.ToShortDateString()}{(Url != null ? $" - {Url}" : "")}";
+      return $"[{Id} - {Item}]: {Time}h - {Date.ToShortDateString()}{(Url != null ? $" - {Url}" : "")}";
     }
   }
 }
