@@ -14,7 +14,7 @@ namespace Trackmat.Lib.Services
 
     public PeriodService(LiteDatabase db = null)
     {
-      var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User);
+      var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User) ?? Environment.GetEnvironmentVariable("TRACKMAT_HOME");
       Db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
       Periods = Db.GetCollection<Period>();
 
