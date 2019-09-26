@@ -1,0 +1,206 @@
+{
+    // Use IntelliSense to find out which attributes exist for C# debugging
+    // Use hover for the description of the existing attributes
+    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "init",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "init"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "init -h",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "init",
+                "-h",
+                "~/Documents/trackmat"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "add-item",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "add-item",
+                "-i",
+                "CSV-2550",
+                "-t",
+                "2.5",
+                "-d",
+                "2019-05-16",
+                "-u",
+                "https://localhost/browse/CSV-2550"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "show-item",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "show-item",
+                "-i",
+                "CSV-2550",
+                "-d"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "update-item",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "update-item",
+                "-I",
+                "5d61d4779791d303e885db4d", // replace for your own and current id
+                "-n",
+                "Smlp-001"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "delete-item",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "delete-item",
+                "-n",
+                "CSV-2550"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "show-period",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "show-period",
+                "-z",
+                "s5",
+                "-d"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "create-period",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "create-period",
+                "-n",
+                "\"Sprint 5\"",
+                "-z",
+                "s5",
+                "-s",
+                "2019-09-15",
+                "-e",
+                "2019-09-20"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "update-period",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "update-period",
+                "-z",
+                "s5",
+                "-n",
+                "\"New Name\"",
+                "-s",
+                "2019-11-05"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": "associate-items",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/Trackmat.Cli/bin/Debug/netcoreapp3.0/Trackmat.Cli.dll",
+            "args": [
+                "associate-items",
+                "-z",
+                "s5",
+                "-i",
+                "CSV-2550",
+                "CSV-2551",
+                "CSV-2552"
+            ],
+            "cwd": "${workspaceFolder}/Trackmat.Cli",
+            // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:pickProcess}"
+        }
+    ]
+}
