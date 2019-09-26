@@ -2,7 +2,7 @@
 
 namespace Trackmat.Lib.Models
 {
-  public class ShowOptions
+  public class ShowTrackItemArgs
   {
     public string Name { get; set; }
     public PaginationValues Pagination { get; set; }
