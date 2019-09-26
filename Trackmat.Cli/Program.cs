@@ -15,7 +15,8 @@ namespace Trackmat.Cli
                         UpdateItemOptions,
                         DeleteItemOptions,
                         AddPeriodOptions,
-                        RunShowPeriodOptions>(args)
+                        RunShowPeriodOptions,
+                        UpdatePeriodOptions>(args)
         .MapResult(
           InitRunnerStart.RunInit(),
           ItemRunnerStart.RunAddItem(),
@@ -24,6 +25,7 @@ namespace Trackmat.Cli
           ItemRunnerStart.RunDeleteItem(),
           PeriodRunnerStart.RunAddPeriod(),
           PeriodRunnerStart.RunShowPeriod(),
+          PeriodRunnerStart.RunUpdatePeriod(),
           errs => (int)ExitCodes.ArgParseFailed
         );
       return result;

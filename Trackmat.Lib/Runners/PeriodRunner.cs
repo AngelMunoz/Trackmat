@@ -70,5 +70,64 @@ namespace Trackmat.Lib.Runners
         }
       }
     }
+
+    public int Update(UpdatePeriodArgs args)
+    {
+      using (var periods = new PeriodService())
+      {
+        Period found;
+        var toUpdate = new Period();
+        try
+        {
+          found = periods.FindOne(args.EzName);
+          if (found == null) throw new ArgumentNullException("Period Not Found");
+          Console.ForegroundColor = ConsoleColor.Yellow;
+          Console.WriteLine($"Updating Found Period\n{found}");
+          Console.ResetColor();
+        }
+        catch (ArgumentNullException)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine($"Period with Easy Name [{args.EzName}] could not be found.");
+          Console.ResetColor();
+          return (int)ExitCodes.FailedToUpdate;
+        }
+        catch (Exception e)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine($"Failed to Update Period with Easy Name [{args.EzName}], {e.Message}");
+          Console.ResetColor();
+          return (int)ExitCodes.FailedToUpdate;
+        }
+
+        if (args.StartDate != DateTime.MinValue)
+        {
+          found.StartDate = args.StartDate;
+        }
+
+        if (args.EndDate != DateTime.MinValue)
+        {
+          found.EndDate = args.EndDate;
+        }
+
+        if (!string.IsNullOrEmpty(args.Name) && !string.IsNullOrWhiteSpace(args.Name))
+        {
+          found.Name = args.Name;
+        }
+
+        var updated = periods.UpdateOne(found);
+        if (!updated)
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine($"Failed to Update Period with Easy Name [{args.EzName}]");
+          Console.ResetColor();
+          return (int)ExitCodes.FailedToUpdate;
+        }
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Period Updated\n{found}");
+        Console.ResetColor();
+        return (int)ExitCodes.Success;
+      }
+    }
   }
 }
