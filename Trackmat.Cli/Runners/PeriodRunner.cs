@@ -190,8 +190,12 @@ namespace Trackmat.Runners
       }
 
       var _items = new TrackItemService();
-
       items = _items.Find(args.Items);
+      if (args?.Ids?.Count() > 0)
+      {
+        var temp = _items.Find(args.Ids);
+        items = items.Concat(temp);
+      }
       if (items == null || items.Count() <= 0)
       {
         var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
@@ -236,11 +240,8 @@ namespace Trackmat.Runners
 
     public int DissociateItems(DissociateItemArgs args, ConsoleKeyInfo prePrompt = new ConsoleKeyInfo())
     {
-      Period found;
-      using (var periods = new PeriodService())
-      {
-        found = periods.FindOne(args.EzName);
-      }
+      using var periods = new PeriodService();
+      var found = periods.FindOne(args.EzName);
       if (found == null)
       {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -249,11 +250,12 @@ namespace Trackmat.Runners
         return (int)ExitCodes.PeriodNotFound;
       }
 
-      if (args.Items == null || args.Items.Count() <= 0)
+      if (args?.Items?.Count() <= 0 && args?.Ids?.Count() <= 0)
       {
-        var joined = args.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        var joined = args?.Items.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
+        var idsjoined = args?.Ids.Aggregate("", (prev, next) => $"{(string.IsNullOrEmpty(prev) ? $"{prev}" : $"{prev}, ")}{next}");
         Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine($"We did not find any items for [{joined}]");
+        Console.WriteLine($"We did not find any items for [Names] or [Ids]");
         Console.ResetColor();
         return (int)ExitCodes.EmptyDissociation;
       }
@@ -273,14 +275,11 @@ namespace Trackmat.Runners
         if (key.Key == ConsoleKey.N) return (int)ExitCodes.Success;
       }
 
-      var remaining = found.Items.SkipWhile(item => args.Items.Contains(item.Item));
+      var remaining = found.Items.SkipWhile(item => args.Items.Contains(item.Item) || args.Ids.Contains(item.Id));
       found.Items = remaining;
       bool updated = false;
 
-      using (var periods = new PeriodService())
-      {
-        updated = periods.UpdateOne(found);
-      }
+      updated = periods.UpdateOne(found);
 
       if (!updated)
       {
