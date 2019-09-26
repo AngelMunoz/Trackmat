@@ -39,7 +39,11 @@ namespace Trackmat.Runners
         try
         {
           PaginatedResult<TrackItem> result;
-          if (options.ItemId != null)
+          if (options.All)
+          {
+            result = items.FindAll(options.Pagination);
+          }
+          else if (options.ItemId != null)
           {
             var item = items.FindOne(options.ItemId);
             result = new PaginatedResult<TrackItem>

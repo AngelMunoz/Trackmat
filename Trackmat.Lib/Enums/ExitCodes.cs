@@ -16,6 +16,7 @@
     PeriodNotFound,
     EmptyAssociation,
     EmptyDissociation,
-    FailedToDeletePeriod
+    FailedToDeletePeriod,
+    MissingArguments
   }
 }

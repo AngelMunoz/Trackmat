@@ -64,6 +64,14 @@ namespace Trackmat.Lib.Services
       }
     }
 
+    public PaginatedResult<Period> FindAll(PaginationValues pagination)
+    {
+      var skip = (pagination.Page - 1) * pagination.Limit;
+      var periods = Periods.Find(Query.All(), skip, pagination.Limit);
+      var count = Periods.Count(Query.All());
+      return new PaginatedResult<Period> { List = periods, Count = count };
+    }
+
     public bool UpdateOne(Period toUpdate)
     {
       return Periods.Update(toUpdate);
