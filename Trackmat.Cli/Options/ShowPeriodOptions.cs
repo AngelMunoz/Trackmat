@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli.Options
 {
@@ -13,9 +13,9 @@ namespace Trackmat.Cli.Options
     [Option('d', "details", Required = false, HelpText = "Provide Complete Details about the found period.")]
     public bool Detailed { get; set; }
 
-    public ShowPeriodOptions ToShowPeriodOptions()
+    public ShowPeriodArgs ToShowPeriodArgs()
     {
-      return new ShowPeriodOptions
+      return new ShowPeriodArgs
       {
         EzName = EzName,
         Detailed = Detailed
@@ -25,7 +25,7 @@ namespace Trackmat.Cli.Options
     public static int Run(RunShowPeriodOptions opts)
     {
       var runner = new PeriodRunner();
-      return runner.Show(opts.ToShowPeriodOptions());
+      return runner.Show(opts.ToShowPeriodArgs());
     }
   }
 }

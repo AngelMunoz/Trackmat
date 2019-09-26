@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CommandLine;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli.Options
 {

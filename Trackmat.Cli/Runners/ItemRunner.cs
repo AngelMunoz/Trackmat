@@ -5,7 +5,7 @@ using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
 
-namespace Trackmat.Lib.Runners
+namespace Trackmat.Runners
 {
   public class ItemRunner
   {
@@ -32,7 +32,7 @@ namespace Trackmat.Lib.Runners
       }
     }
 
-    public int Show(ShowOptions options)
+    public int Show(ShowTrackItemArgs options)
     {
       using (var items = new TrackItemService())
       {
@@ -78,7 +78,7 @@ namespace Trackmat.Lib.Runners
       }
     }
 
-    public int Update(UpdateOptions options)
+    public int Update(UpdateTrackItemArgs options)
     {
       using (var items = new TrackItemService())
       {
@@ -134,7 +134,7 @@ namespace Trackmat.Lib.Runners
       }
     }
 
-    public int Delete(DeleteOptions options)
+    public int Delete(DeleteTrackItemArgs options)
     {
       IEnumerable<TrackItem> byIds = new TrackItem[0];
       IEnumerable<PaginatedResult<TrackItem>> byNames = new PaginatedResult<TrackItem>[0];

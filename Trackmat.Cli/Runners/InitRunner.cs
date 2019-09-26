@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using LiteDB;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
+using Trackmat.Lib.Services;
 
-namespace Trackmat.Lib.Runners
+namespace Trackmat.Runners
 {
   public class InitRunner
   {
@@ -109,47 +109,32 @@ namespace Trackmat.Lib.Runners
     {
       try
       {
-        using (var db = new LiteDatabase(Path.Combine(path, "config.db")))
+        TrackItem itemCreated;
+        Period periodCreated;
+        using (var items = new TrackItemService())
         {
-          var configdb = db.GetCollection<InitConfig>();
-          configdb.Insert(new InitConfig { HomeDirectory = path });
-          Console.WriteLine($"Succesfully Created Config Database \"{Path.Combine(path, "config.db")}\"");
-        }
-        using (var db = new LiteDatabase(Path.Combine(path, "trackmat.db")))
-        {
-          var periods = db.GetCollection<Period>();
-          var items = db.GetCollection<TrackItem>();
-          items.Insert(new TrackItem
+          itemCreated = items.Create(new TrackItem
           {
             Item = "SMPL-001",
             Time = 0.5f,
             Date = DateTime.Now
           });
-          var resItem = items.FindOne(item => item.Item == "SMPL-001");
-          periods.Insert(new Period
+        }
+        using (var periods = new PeriodService())
+        {
+          periodCreated = periods.Create(new Period
           {
             Name = "Sample Period",
             EzName = "sample",
             StartDate = DateTime.Now,
             EndDate = DateTime.Now.AddDays(1),
-            Items = new TrackItem[] { resItem }
+            Items = new TrackItem[] { itemCreated }
           });
-          var periodRes = periods.Include(period => period.Items).FindOne(period => period.EzName == "sample");
-
-          items.EnsureIndex(item => item.Item);
-          items.EnsureIndex(item => item.Date);
-
-          periods.EnsureIndex(period => period.EzName, true);
-          periods.EnsureIndex(period => period.Name);
-
-          periods.EnsureIndex(period => period.StartDate);
-          periods.EnsureIndex(period => period.EndDate);
-
-          Console.WriteLine($"Succesfully Created Item and Period Databases \"{Path.Combine(path, "trackmat.db")}\"");
-          Console.WriteLine(periodRes.ToString());
-          Console.WriteLine(resItem.ToString());
-          Console.ResetColor();
         }
+        Console.WriteLine($"Succesfully Created Item and Period Databases \"{Path.Combine(path, "trackmat.db")}\"");
+        Console.WriteLine(itemCreated);
+        Console.WriteLine(periodCreated);
+        Console.ResetColor();
       }
       catch (Exception e)
       {

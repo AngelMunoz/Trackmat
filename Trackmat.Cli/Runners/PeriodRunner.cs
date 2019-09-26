@@ -5,7 +5,7 @@ using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
 
-namespace Trackmat.Lib.Runners
+namespace Trackmat.Runners
 {
   public class PeriodRunner
   {
@@ -40,7 +40,7 @@ namespace Trackmat.Lib.Runners
       }
     }
 
-    public int Show(ShowPeriodOptions opts)
+    public int Show(ShowPeriodArgs opts)
     {
       using (var periods = new PeriodService())
       {

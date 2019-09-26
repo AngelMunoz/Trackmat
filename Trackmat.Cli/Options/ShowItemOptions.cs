@@ -2,7 +2,7 @@
 using CommandLine;
 using LiteDB;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli.Options
 {
@@ -24,7 +24,7 @@ namespace Trackmat.Cli.Options
     [Option('I', "id", HelpText = "If you know the Id, show that specific item")]
     public string ItemId { get; set; }
 
-    public ShowOptions ToItemOptions()
+    public ShowTrackItemArgs ToShowTrackItemArgs()
     {
       ObjectId id = null;
       try
@@ -38,7 +38,7 @@ namespace Trackmat.Cli.Options
         Console.WriteLine($"The \"[id: {ItemId}]\" is not a valid id. Ignoring...");
         Console.ResetColor();
       }
-      return new ShowOptions
+      return new ShowTrackItemArgs
       {
         Name = Item,
         Pagination = new PaginationValues { Page = Page, Limit = Limit },
@@ -49,7 +49,7 @@ namespace Trackmat.Cli.Options
     public static int Run(ShowItemOptions opts)
     {
       var runner = new ItemRunner();
-      return runner.Show(opts.ToItemOptions());
+      return runner.Show(opts.ToShowTrackItemArgs());
     }
   }
 }

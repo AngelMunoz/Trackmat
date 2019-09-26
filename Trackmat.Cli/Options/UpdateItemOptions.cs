@@ -4,7 +4,7 @@ using CommandLine;
 using LiteDB;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli.Options
 {
@@ -29,7 +29,7 @@ namespace Trackmat.Cli.Options
     [Option('r', "replace", Required = false, HelpText = "Replace previous entry with this updated one")]
     public bool Replace { get; set; }
 
-    public UpdateOptions ToUpdateOptions()
+    public UpdateTrackItemArgs ToUpdateTrackItemArgs()
     {
       ObjectId id;
       DateTime date;
@@ -71,7 +71,7 @@ namespace Trackmat.Cli.Options
         definition.Url = Url;
       }
       definition.Date = date;
-      return new UpdateOptions
+      return new UpdateTrackItemArgs
       {
         UpdateId = id,
         UpdateDefinition = definition,
@@ -100,7 +100,7 @@ namespace Trackmat.Cli.Options
           throw new Exception("Replacing without a name or time");
         }
 
-        result = runner.Update(opts.ToUpdateOptions());
+        result = runner.Update(opts.ToUpdateTrackItemArgs());
       }
       catch (Exception) { }
       return result;

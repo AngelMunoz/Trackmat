@@ -1,7 +1,7 @@
 ﻿using System;
 using Trackmat.Cli.Options;
 using Trackmat.Lib.Enums;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli
 {

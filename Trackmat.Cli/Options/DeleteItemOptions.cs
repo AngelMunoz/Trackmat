@@ -4,7 +4,7 @@ using System.Linq;
 using CommandLine;
 using LiteDB;
 using Trackmat.Lib.Models;
-using Trackmat.Lib.Runners;
+using Trackmat.Runners;
 
 namespace Trackmat.Cli.Options
 {
@@ -23,7 +23,7 @@ namespace Trackmat.Cli.Options
     [Option("all-ids", Required = false, HelpText = "Confirmation to delete all the items found with those ids")]
     public bool AllIds { get; set; }
 
-    public DeleteOptions ToDeleteOptions()
+    public DeleteTrackItemArgs ToDeleteTrackItemArgs()
     {
       var ids = Ids?.Select(id =>
       {
@@ -39,7 +39,7 @@ namespace Trackmat.Cli.Options
         }
       })
         .Where(id => id != null);
-      return new DeleteOptions
+      return new DeleteTrackItemArgs
       {
         Ids = ids,
         Names = Names,
@@ -51,7 +51,7 @@ namespace Trackmat.Cli.Options
     public static int Run(DeleteItemOptions opts)
     {
       var runner = new ItemRunner();
-      return runner.Delete(opts.ToDeleteOptions());
+      return runner.Delete(opts.ToDeleteTrackItemArgs());
     }
   }
 }
