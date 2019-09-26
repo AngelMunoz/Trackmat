@@ -10,22 +10,24 @@ namespace Trackmat.Lib.Services
 {
   public class TrackItemService : IDisposable
   {
-    private LiteDatabase db { get; set; }
-    private LiteCollection<TrackItem> trackitems { get; set; }
+    private LiteDatabase Db { get; set; }
+    private LiteCollection<TrackItem> TrackItems { get; set; }
 
     public TrackItemService(LiteDatabase db = null)
     {
       var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User);
-      this.db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
-      trackitems = this.db.GetCollection<TrackItem>();
+      Db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
+      TrackItems = Db.GetCollection<TrackItem>();
+      TrackItems.EnsureIndex(item => item.Item);
+      TrackItems.EnsureIndex(item => item.Date);
     }
 
     public TrackItem Create(TrackItem item)
     {
       try
       {
-        var createdId = trackitems.Insert(item);
-        return trackitems.FindById(createdId);
+        var createdId = TrackItems.Insert(item);
+        return TrackItems.FindById(createdId);
       }
       catch (Exception e)
       {
@@ -38,7 +40,7 @@ namespace Trackmat.Lib.Services
     {
       try
       {
-        return trackitems.FindById(id);
+        return TrackItems.FindById(id);
       }
       catch (Exception e)
       {
@@ -50,8 +52,8 @@ namespace Trackmat.Lib.Services
     public PaginatedResult<TrackItem> Find(string name, PaginationValues pagination)
     {
       var skip = (pagination.Page - 1) * pagination.Limit;
-      var count = trackitems.Count(item => item.Item == name);
-      var items = trackitems.Find(item => item.Item == name, skip, pagination.Limit);
+      var count = TrackItems.Count(item => item.Item == name);
+      var items = TrackItems.Find(item => item.Item == name, skip, pagination.Limit);
       return new PaginatedResult<TrackItem>
       {
         Count = count,
@@ -61,37 +63,37 @@ namespace Trackmat.Lib.Services
 
     public IEnumerable<TrackItem> Find(IEnumerable<string> names)
     {
-      return trackitems.Find(item => names.Contains(item.Item));
+      return TrackItems.Find(item => names.Contains(item.Item));
     }
 
     public IEnumerable<TrackItem> Find(IEnumerable<ObjectId> ids)
     {
-      return ids.Select(id => trackitems.FindById(id));
+      return ids.Select(id => TrackItems.FindById(id));
     }
 
     public int Delete(string name)
     {
-      return trackitems.Delete(item => item.Item == name);
+      return TrackItems.Delete(item => item.Item == name);
     }
 
     public bool Delete(ObjectId id)
     {
-      return trackitems.Delete(id);
+      return TrackItems.Delete(id);
     }
 
     public IEnumerable<bool> Delete(IEnumerable<ObjectId> ids)
     {
-      return ids.Select(id => trackitems.Delete(id));
+      return ids.Select(id => TrackItems.Delete(id));
     }
 
     public IEnumerable<int> Delete(IEnumerable<string> names)
     {
-      return names.Select(name => trackitems.Delete(item => item.Item == name));
+      return names.Select(name => TrackItems.Delete(item => item.Item == name));
     }
 
     public bool UpdateOne(TrackItem toUpdate)
     {
-      return trackitems.Update(toUpdate);
+      return TrackItems.Update(toUpdate);
     }
 
     #region IDisposable Support
@@ -104,7 +106,7 @@ namespace Trackmat.Lib.Services
         if (disposing)
         {
           // TODO: dispose managed state (managed objects).
-          db.Dispose();
+          Db.Dispose();
         }
 
         // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.

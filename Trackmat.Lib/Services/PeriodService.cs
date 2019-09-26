@@ -9,14 +9,20 @@ namespace Trackmat.Lib.Services
   public class PeriodService : IDisposable
   {
 
-    private LiteDatabase _db { get; set; }
+    private LiteDatabase Db { get; set; }
     private LiteCollection<Period> Periods { get; set; }
 
     public PeriodService(LiteDatabase db = null)
     {
       var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User);
-      _db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
-      Periods = _db.GetCollection<Period>();
+      Db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
+      Periods = Db.GetCollection<Period>();
+
+      Periods.EnsureIndex(period => period.EzName, true);
+      Periods.EnsureIndex(period => period.Name);
+
+      Periods.EnsureIndex(period => period.StartDate);
+      Periods.EnsureIndex(period => period.EndDate);
     }
 
     public Period Create(Period period)
@@ -87,7 +93,7 @@ namespace Trackmat.Lib.Services
         if (disposing)
         {
           // TODO: dispose managed state (managed objects).
-          _db.Dispose();
+          Db.Dispose();
         }
 
         // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
