@@ -58,6 +58,11 @@ namespace Trackmat.Lib.Services
       }
     }
 
+    public bool UpdateOne(Period toUpdate)
+    {
+      return Periods.Update(toUpdate);
+    }
+
     public bool Exists(string ezName)
     {
       try

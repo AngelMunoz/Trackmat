@@ -51,6 +51,10 @@
     "Trackmat.Cli-ShowPeriodDetailed": {
       "commandName": "Project",
       "commandLineArgs": "show-period -z s5 -d"
+    },
+    "Trackmat.Cli-UpdatePeriod": {
+      "commandName": "Project",
+      "commandLineArgs": "update-period -z s5 -n \"New Name\" -s 2019-11-05"
     }
   }
 }

@@ -38,5 +38,21 @@ namespace Trackmat.Cli
         return RunShowPeriodOptions.Run(opts);
       };
     }
+
+    public static Func<UpdatePeriodOptions, int> RunUpdatePeriod()
+    {
+      return (UpdatePeriodOptions opts) =>
+      {
+        if (!InitRunner.IsConfigured())
+        {
+          Console.ForegroundColor = ConsoleColor.Red;
+          Console.WriteLine("Trackmat is not configured yet");
+          Console.WriteLine("Please run \"trackmat init\" to configure Trackmat");
+          Console.ResetColor();
+          return (int)ExitCodes.NotConfigured;
+        }
+        return UpdatePeriodOptions.Run(opts);
+      };
+    }
   }
 }
