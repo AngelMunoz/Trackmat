@@ -12,10 +12,9 @@ namespace Trackmat.Lib.Services
     private LiteDatabase Db { get; set; }
     private LiteCollection<Period> Periods { get; set; }
 
-    public PeriodService(LiteDatabase db = null)
+    public PeriodService(string connString)
     {
-      var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User) ?? Environment.GetEnvironmentVariable("TRACKMAT_HOME");
-      Db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
+      Db = new LiteDatabase(connString);
       Periods = Db.GetCollection<Period>();
 
       Periods.EnsureIndex(period => period.EzName, true);

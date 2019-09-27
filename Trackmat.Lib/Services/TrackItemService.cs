@@ -13,10 +13,9 @@ namespace Trackmat.Lib.Services
     private LiteDatabase Db { get; set; }
     private LiteCollection<TrackItem> TrackItems { get; set; }
 
-    public TrackItemService(LiteDatabase db = null)
+    public TrackItemService(string connString)
     {
-      var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User) ?? Environment.GetEnvironmentVariable("TRACKMAT_HOME");
-      Db = db ?? new LiteDatabase(Path.Combine(homedir, "trackmat.db"));
+      Db = new LiteDatabase(connString);
       TrackItems = Db.GetCollection<TrackItem>();
       TrackItems.EnsureIndex(item => item.Item);
       TrackItems.EnsureIndex(item => item.Date);
