@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using LiteDB;
+using Trackmat.Cli.Extensions;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
-using Trackmat.Cli.Extensions;
 
 namespace Trackmat.Runners
 {
