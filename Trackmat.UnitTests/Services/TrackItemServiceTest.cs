@@ -19,8 +19,7 @@ namespace Trackmat.Lib.Services.Tests
     {
       homepath = Path.Combine(Path.GetTempPath(), "trackmat");
       Directory.CreateDirectory(homepath);
-      _db = new LiteDatabase(Path.Combine(homepath, "trackmat.db"));
-      _items = new TrackItemService(_db);
+      _items = new TrackItemService(Path.Combine(homepath, "trackmat.db"));
     }
 
     [TestCleanup()]

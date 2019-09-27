@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Trackmat.Cli.Extensions;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
@@ -9,35 +10,38 @@ namespace Trackmat.Runners
 {
   public class PeriodRunner
   {
+    private string ConnString
+    {
+      get => $"Filename={"trackmat.db".GetDatabasePath()};Async=true";
+    }
+
     public int Create(Period period)
     {
-      using (var periods = new PeriodService())
+      using var periods = new PeriodService(ConnString);
+      if (periods.Exists(period.EzName))
       {
-        if (periods.Exists(period.EzName))
-        {
-          Console.ForegroundColor = ConsoleColor.Yellow;
-          Console.WriteLine($"A period with the Easy Name: \"{period.EzName}\" already exists!");
-          Console.WriteLine($"Please run \"trackmat show-period -z {period.EzName}\" to see it");
-          Console.ResetColor();
-          return (int)ExitCodes.PeriodExists;
-        }
-        try
-        {
-          period.Items = new List<TrackItem>();
-          var created = periods.Create(period);
-          Console.ForegroundColor = ConsoleColor.Green;
-          Console.WriteLine($"Saved [{created.Id} - {created.Name}] Successfully \n{created}");
-          Console.ResetColor();
-        }
-        catch (Exception e)
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine($"Failed to Create {period.Name}. {e.Message}");
-          Console.ResetColor();
-          return (int)ExitCodes.FailedToCreateItem;
-        }
-        return (int)ExitCodes.Success;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"A period with the Easy Name: \"{period.EzName}\" already exists!");
+        Console.WriteLine($"Please run \"trackmat show-period -z {period.EzName}\" to see it");
+        Console.ResetColor();
+        return (int)ExitCodes.PeriodExists;
       }
+      try
+      {
+        period.Items = new List<TrackItem>();
+        var created = periods.Create(period);
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Saved [{created.Id} - {created.Name}] Successfully \n{created}");
+        Console.ResetColor();
+      }
+      catch (Exception e)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to Create {period.Name}. {e.Message}");
+        Console.ResetColor();
+        return (int)ExitCodes.FailedToCreateItem;
+      }
+      return (int)ExitCodes.Success;
     }
 
     public int Show(ShowPeriodArgs opts)
@@ -50,7 +54,7 @@ namespace Trackmat.Runners
         Console.ResetColor();
         return (int)ExitCodes.MissingArguments;
       }
-      using var periods = new PeriodService();
+      using var periods = new PeriodService(ConnString);
       if (opts.All)
       {
         return FindAllPeriods(opts.Pagination, opts.Detailed);
@@ -71,71 +75,67 @@ namespace Trackmat.Runners
     }
     public int Update(UpdatePeriodArgs args)
     {
-      using (var periods = new PeriodService())
+      using var periods = new PeriodService(ConnString);
+      Period found;
+      var toUpdate = new Period();
+      try
       {
-        Period found;
-        var toUpdate = new Period();
-        try
-        {
-          found = periods.FindOne(args.EzName);
-          if (found == null) throw new ArgumentNullException("Period Not Found");
-          Console.ForegroundColor = ConsoleColor.Yellow;
-          Console.WriteLine($"Updating Found Period\n{found}");
-          Console.ResetColor();
-        }
-        catch (ArgumentNullException)
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine($"Period with Easy Name [{args.EzName}] could not be found.");
-          Console.ResetColor();
-          return (int)ExitCodes.FailedToUpdate;
-        }
-        catch (Exception e)
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine($"Failed to Update Period with Easy Name [{args.EzName}], {e.Message}");
-          Console.ResetColor();
-          return (int)ExitCodes.FailedToUpdate;
-        }
-
-        if (args.StartDate != DateTime.MinValue)
-        {
-          found.StartDate = args.StartDate;
-        }
-
-        if (args.EndDate != DateTime.MinValue)
-        {
-          found.EndDate = args.EndDate;
-        }
-
-        if (!string.IsNullOrEmpty(args.Name) && !string.IsNullOrWhiteSpace(args.Name))
-        {
-          found.Name = args.Name;
-        }
-
-        var updated = periods.UpdateOne(found);
-        if (!updated)
-        {
-          Console.ForegroundColor = ConsoleColor.Red;
-          Console.WriteLine($"Failed to Update Period with Easy Name [{args.EzName}]");
-          Console.ResetColor();
-          return (int)ExitCodes.FailedToUpdate;
-        }
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"Period Updated\n{found}");
+        found = periods.FindOne(args.EzName);
+        if (found == null) throw new ArgumentNullException("Period Not Found");
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"Updating Found Period\n{found}");
         Console.ResetColor();
-        return (int)ExitCodes.Success;
       }
+      catch (ArgumentNullException)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Period with Easy Name [{args.EzName}] could not be found.");
+        Console.ResetColor();
+        return (int)ExitCodes.FailedToUpdate;
+      }
+      catch (Exception e)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to Update Period with Easy Name [{args.EzName}], {e.Message}");
+        Console.ResetColor();
+        return (int)ExitCodes.FailedToUpdate;
+      }
+
+      if (args.StartDate != DateTime.MinValue)
+      {
+        found.StartDate = args.StartDate;
+      }
+
+      if (args.EndDate != DateTime.MinValue)
+      {
+        found.EndDate = args.EndDate;
+      }
+
+      if (!string.IsNullOrEmpty(args.Name) && !string.IsNullOrWhiteSpace(args.Name))
+      {
+        found.Name = args.Name;
+      }
+
+      var updated = periods.UpdateOne(found);
+      if (!updated)
+      {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Failed to Update Period with Easy Name [{args.EzName}]");
+        Console.ResetColor();
+        return (int)ExitCodes.FailedToUpdate;
+      }
+      Console.ForegroundColor = ConsoleColor.Green;
+      Console.WriteLine($"Period Updated\n{found}");
+      Console.ResetColor();
+      return (int)ExitCodes.Success;
     }
 
     public int DeletePeriod(DeletePeriodArgs args)
     {
       Period found;
-      using (var periods = new PeriodService())
-      {
-        found = periods.FindOne(args.EzName);
-        if (found == null) return (int)ExitCodes.PeriodNotFound;
-      }
+      using var periods = new PeriodService(ConnString);
+      found = periods.FindOne(args.EzName);
+      if (found == null) return (int)ExitCodes.PeriodNotFound;
 
       ConsoleKeyInfo key = new ConsoleKeyInfo();
       if (args.Dissociate)
@@ -158,10 +158,9 @@ namespace Trackmat.Runners
       Console.ForegroundColor = ConsoleColor.Yellow;
       Console.WriteLine($"Proceeding to Delete\n{found}");
       var deleted = false;
-      using (var periods = new PeriodService())
-      {
-        deleted = periods.Delete(found.Id);
-      }
+
+      deleted = periods.Delete(found.Id);
+
       if (!deleted)
       {
         Console.ForegroundColor = ConsoleColor.Red;
@@ -177,7 +176,7 @@ namespace Trackmat.Runners
 
     public int AssociateItems(AssociateItemArgs args, ConsoleKeyInfo prePrompt = new ConsoleKeyInfo())
     {
-      using var periods = new PeriodService();
+      using var periods = new PeriodService(ConnString);
       IEnumerable<TrackItem> items;
       Period found;
       found = periods.FindOne(args.EzName);
@@ -189,7 +188,7 @@ namespace Trackmat.Runners
         return (int)ExitCodes.PeriodNotFound;
       }
 
-      var _items = new TrackItemService();
+      using var _items = new TrackItemService(ConnString);
       items = _items.Find(args.Items);
       if (args?.Ids?.Count() > 0)
       {
@@ -240,7 +239,7 @@ namespace Trackmat.Runners
 
     public int DissociateItems(DissociateItemArgs args, ConsoleKeyInfo prePrompt = new ConsoleKeyInfo())
     {
-      using var periods = new PeriodService();
+      using var periods = new PeriodService(ConnString);
       var found = periods.FindOne(args.EzName);
       if (found == null)
       {
@@ -294,7 +293,7 @@ namespace Trackmat.Runners
 
     private int FindAllPeriods(PaginationValues pagination, bool detailed)
     {
-      using var periods = new PeriodService();
+      using var periods = new PeriodService(ConnString);
 
       var paginated = periods.FindAll(pagination);
       Console.ForegroundColor = ConsoleColor.Green;

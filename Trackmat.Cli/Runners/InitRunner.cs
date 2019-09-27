@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Trackmat.Cli.Extensions;
 using Trackmat.Lib.Enums;
 using Trackmat.Lib.Models;
 using Trackmat.Lib.Services;
@@ -8,6 +9,11 @@ namespace Trackmat.Runners
 {
   public class InitRunner
   {
+    private string ConnString
+    {
+      get => $"Filename={"trackmat.db".GetDatabasePath()};Async=true";
+    }
+
     public static bool IsConfigured()
     {
       var homedir = Environment.GetEnvironmentVariable("TRACKMAT_HOME", EnvironmentVariableTarget.User) ?? Environment.GetEnvironmentVariable("TRACKMAT_HOME");
@@ -109,28 +115,24 @@ namespace Trackmat.Runners
     {
       try
       {
-        TrackItem itemCreated;
-        Period periodCreated;
-        using (var items = new TrackItemService())
+        using var items = new TrackItemService(ConnString);
+        using var periods = new PeriodService(ConnString);
+
+        var itemCreated = items.Create(new TrackItem
         {
-          itemCreated = items.Create(new TrackItem
-          {
-            Item = "SMPL-001",
-            Time = 0.5f,
-            Date = DateTime.Now
-          });
-        }
-        using (var periods = new PeriodService())
+          Item = "SMPL-001",
+          Time = 0.5f,
+          Date = DateTime.Now
+        });
+        var periodCreated = periods.Create(new Period
         {
-          periodCreated = periods.Create(new Period
-          {
-            Name = "Sample Period",
-            EzName = "sample",
-            StartDate = DateTime.Now,
-            EndDate = DateTime.Now.AddDays(1),
-            Items = new TrackItem[] { itemCreated }
-          });
-        }
+          Name = "Sample Period",
+          EzName = "sample",
+          StartDate = DateTime.Now,
+          EndDate = DateTime.Now.AddDays(1),
+          Items = new TrackItem[] { itemCreated }
+        });
+
         Console.WriteLine($"Succesfully Created Item and Period Databases \"{Path.Combine(path, "trackmat.db")}\"");
         Console.WriteLine(itemCreated);
         Console.WriteLine(periodCreated);

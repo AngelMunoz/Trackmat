@@ -12,7 +12,6 @@ namespace Trackmat.Lib.Services.Tests
   public class PeriodServiceTest
   {
     private string homepath;
-    private LiteDatabase _db;
     private TrackItemService _items;
     private PeriodService _periods;
 
@@ -21,9 +20,8 @@ namespace Trackmat.Lib.Services.Tests
     {
       homepath = Path.Combine(Path.GetTempPath(), "trackmat");
       Directory.CreateDirectory(homepath);
-      _db = new LiteDatabase(Path.Combine(homepath, "trackmat.db"));
-      _items = new TrackItemService(_db);
-      _periods = new PeriodService(_db);
+      _items = new TrackItemService(Path.Combine(homepath, "trackmat.db"));
+      _periods = new PeriodService(Path.Combine(homepath, "trackmat.db"));
     }
 
     [TestCleanup()]
