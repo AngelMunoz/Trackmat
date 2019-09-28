@@ -11,7 +11,6 @@ namespace Trackmat.Lib.Services.Tests
   public class TrackItemServiceTest
   {
     private string homepath;
-    private readonly LiteDatabase _db;
     private TrackItemService _items;
 
     [TestInitialize()]
