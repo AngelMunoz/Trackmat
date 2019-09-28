@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
-    <Configurations>Debug;Release;Add Item;Add Item Wrong Date</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <Version>1.1.0</Version>
     <Authors>Angel D. Munoz</Authors>
     <Company>Tunaxor Apps.</Company>

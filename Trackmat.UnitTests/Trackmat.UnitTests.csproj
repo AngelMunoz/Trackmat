@@ -5,7 +5,7 @@
 
     <IsPackable>false</IsPackable>
 
-    <Configurations>Debug;Release;Add Item;Add Item Wrong Date</Configurations>
+    <Configurations>Debug;Release</Configurations>
 
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
