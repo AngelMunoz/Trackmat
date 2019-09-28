@@ -1,0 +1,42 @@
+﻿<UserControl
+    x:Class="Trackmat.Uwp.Views.PeriodsDetail.DetailsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <ScrollViewer
+            Name="ForegroundElement"
+            Padding="{StaticResource DetailPageMargin}"
+            HorizontalAlignment="Stretch"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            VerticalScrollMode="Enabled">
+            <StackPanel HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <TextBlock
+                        Margin="{StaticResource SmallLeftMargin}"
+                        VerticalAlignment="Center"
+                        Style="{ThemeResource TitleTextBlockStyle}"
+                        Text="{x:Bind ViewModel.Item.Name, Mode=OneWay}" />
+                </StackPanel>
+                <StackPanel Name="block" Padding="0,15,0,0">
+                    <TextBlock Style="{StaticResource DetailSubTitleStyle}" Text="Easy Name" />
+                    <TextBlock Style="{StaticResource DetailBodyBaseMediumStyle}" Text="{x:Bind ViewModel.Item.EzName, Mode=OneWay}" />
+                    <TextBlock
+                        Margin="{StaticResource SmallTopMargin}"
+                        Style="{StaticResource DetailSubTitleStyle}"
+                        Text="Start Date" />
+                    <TextBlock Text="{x:Bind ViewModel.Item.StartDate, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
+                    <TextBlock
+                        Margin="{StaticResource SmallTopMargin}"
+                        Style="{StaticResource DetailSubTitleStyle}"
+                        Text="End Date" />
+                    <TextBlock Text="{x:Bind ViewModel.Item.EndDate, Mode=OneWay}" Style="{StaticResource DetailBodyBaseMediumStyle}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
